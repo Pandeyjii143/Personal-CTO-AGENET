@@ -1,15 +1,18 @@
 from pydantic_settings import BaseSettings
 
-
 class Settings(BaseSettings):
-    APP_NAME: str
-    APP_VERSION: str
-    ENVIRONMENT: str
+    app_name: str
+    app_version: str
+    environment: str
 
-    DATABASE_URL: str
+    database_url: str
+    openai_api_key: str
+
+    # ADD THIS
+    openai_model: str = "gpt-5.6"
 
     class Config:
         env_file = ".env"
-
+        extra = "ignore"
 
 settings = Settings()

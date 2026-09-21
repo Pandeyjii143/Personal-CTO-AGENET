@@ -11,6 +11,9 @@ from app.services.project_service import (
     ProjectService
 )
 
+from app.schemas.project import ProjectUpdate
+from fastapi import HTTPException
+
 router = APIRouter(
     prefix="/projects",
     tags=["Projects"]
@@ -54,3 +57,46 @@ def get_project(
         db,
         project_id
     )
+
+@router.patch(
+    "/{project_id}",
+    response_model=ProjectResponse
+)
+def update_project(
+    project_id: int,
+    data: ProjectUpdate,
+    db: Session = Depends(get_db)
+):
+    project = ProjectService.update_project(
+        db,
+        project_id,
+        data.model_dump(exclude_unset=True)
+    )
+
+    if not project:
+        raise HTTPException(
+            status_code=404,
+            detail="Project not found"
+        )
+
+    return project
+
+@router.delete("/{project_id}")
+def delete_project(
+    project_id: int,
+    db: Session = Depends(get_db)
+):
+    deleted = ProjectService.delete_project(
+        db,
+        project_id
+    )
+
+    if not deleted:
+        raise HTTPException(
+            status_code=404,
+            detail="Project not found"
+        )
+
+    return {
+        "message": f"Project id:{project_id} deleted successfully"
+    }

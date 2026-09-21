@@ -30,7 +30,7 @@ class ProjectRepository:
         return db.query(Project).all()
 
     @staticmethod
-    
+
     def get_by_id(
         db: Session,
         project_id: int
@@ -39,4 +39,25 @@ class ProjectRepository:
             db.query(Project)
             .filter(Project.id == project_id)
             .first()
-        )
+            )
+    @staticmethod
+    def update(
+        db: Session,
+        project,
+        update_data: dict
+    ):
+        for key, value in update_data.items():
+            setattr(project, key, value)
+
+        db.commit()
+        db.refresh(project)
+
+        return project
+
+    @staticmethod
+    def delete(
+        db: Session,
+        project
+    ):
+        db.delete(project)
+        db.commit()

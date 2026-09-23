@@ -21,6 +21,10 @@ class ProjectService:
             description=description,
             goal=goal
         )
+    
+    @staticmethod
+    def get_projects(db):
+        return ProjectRepository.get_all(db)
 
     @staticmethod
     def get_project(

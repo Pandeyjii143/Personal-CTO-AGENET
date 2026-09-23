@@ -6,11 +6,23 @@ from app.agents.base_agent import BaseAgent
 
 class ArchitectAgent(BaseAgent):
 
-    @staticmethod
+    @classmethod
+    def execute(cls, task: str):
+
+        prompt = ARCHITECT_PROMPT.format(
+            project_name="Generated Project",
+            goal=task
+        )
+
+        response = cls.call_llm(prompt)
+
+        return cls.parse_json(response)
+
+    @classmethod
     def generate(
+        cls,
         project_name: str,
         goal: str,
-        cls
     ):
 
         prompt = ARCHITECT_PROMPT.format(
@@ -20,6 +32,4 @@ class ArchitectAgent(BaseAgent):
 
         response = cls.call_llm(prompt)
 
-        return json.loads(
-            response.output_text
-        )
+        return cls.parse_json(response)

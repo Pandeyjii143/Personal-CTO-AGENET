@@ -6,7 +6,17 @@ You are a senior FastAPI backend engineer.
 Task:
 {task}
 
-Generate implementation plan and code.
+Return ONLY:
+
+{{
+    "backend_summary":"",
+    "required_files":[]
+}}
+
+Do not generate implementation details.
+Do not generate code.
+Do not generate endpoints.
+Do not generate tasks.
 """
 
 
@@ -19,4 +29,6 @@ class BackendAgent(BaseAgent):
             task=task
         )
 
-        return cls.call_llm(prompt)
+        response = cls.call_llm(prompt)
+
+        return cls.parse_json(response)

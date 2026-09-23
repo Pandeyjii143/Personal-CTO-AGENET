@@ -21,6 +21,10 @@ from app.agents.testing_agent import TestingAgent
 
 from app.services.file_writer import FileWriter
 from app.services.project_runner import ProjectRunner
+import os
+from app.services.github_service import GitHubService
+from app.agents.readme_agent import READMEAgent
+
 
 
 AGENTS = {
@@ -129,36 +133,45 @@ class Orchestrator:
                     generated_files
                 )
 
-               # ----------------------------------
+                readme_result = READMEAgent.execute(context)
+
+                generated_files[
+                    readme_result["file_path"]
+                ] = readme_result
+
+                #          ----------------------------------
                 # Step 3: Save Files
                 # ----------------------------------
 
-                
-
                 project_name = (
-                    backend_plan.get(
-                        "project_name",
-                        "generated_project"
-                    )
+                    f"generated_project_"
+                    f"{datetime.now().strftime('%Y%m%d_%H%M%S')}"
                 )
 
-                project_name = (
-                    f"{project_name}_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
-                )
-
-                print("PROJECT NAME =", project_name)
-
-                FileWriter.write_files(
+                project_folder = FileWriter.write_files(
                     generated_files,
                     project_name
                 )
 
-                results["project_folder"] = (
-                    f"generated_projects/{project_name}"
-                )
+                results["project_folder"] = project_folder
 
                 print(
-                    f"Project saved in generated_projects/{project_name}"
+                    f"Project saved at {project_folder}"
+                )
+
+                # ----------------------------------
+                # Step 3.5: Push To GitHub
+                # ----------------------------------
+
+                repo_url = GitHubService.push_project(
+                    project_folder,
+                    project_name
+                )
+
+                results["repo_url"] = repo_url
+
+                print(
+                    f"GitHub Repo: {repo_url}"
                 )
 
                 # ----------------------------------

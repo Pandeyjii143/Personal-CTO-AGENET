@@ -13,12 +13,25 @@ Return ONLY:
     "required_files":[]
 }}
 
+Rules:
+1. required_files must contain ONLY file paths.
+2. Never return folders or directories.
+3. Every item must have a filename and extension.
+4. Examples:
+   - app/main.py
+   - app/models/user.py
+   - tests/test_auth.py
+   - alembic/env.py
+5. Invalid examples:
+   - app/
+   - alembic/
+   - alembic/versions/
+
 Do not generate implementation details.
 Do not generate code.
 Do not generate endpoints.
 Do not generate tasks.
 """
-
 
 class BackendAgent(BaseAgent):
 

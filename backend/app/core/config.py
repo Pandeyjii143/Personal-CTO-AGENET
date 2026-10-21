@@ -6,7 +6,7 @@ class Settings(BaseSettings):
     environment: str
 
     database_url: str
-    openai_api_key: str
+    openai_api_key: str = ""
 
     # ADD THIS
     openai_model: str = "gpt-5.6"

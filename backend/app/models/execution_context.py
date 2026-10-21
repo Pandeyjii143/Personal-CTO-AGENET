@@ -1,4 +1,9 @@
+from typing import Optional
+from app.models.project_config import ProjectConfig
+
 class ExecutionContext:
+
+    project_config: Optional[ProjectConfig] = None
 
     def __init__(
         self,

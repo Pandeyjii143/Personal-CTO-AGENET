@@ -1,3 +1,5 @@
+from openai import OpenAI
+
 from app.agents.base_agent import BaseAgent
 
 BACKEND_PROMPT = """
@@ -36,12 +38,12 @@ Do not generate tasks.
 class BackendAgent(BaseAgent):
 
     @classmethod
-    def execute(cls, task):
+    def execute(cls, task, llm_client: OpenAI | None = None):
 
         prompt = BACKEND_PROMPT.format(
             task=task
         )
 
-        response = cls.call_llm(prompt)
+        response = cls.call_llm(prompt, llm_client)
 
         return cls.parse_json(response)

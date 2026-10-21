@@ -24,10 +24,16 @@ from app.services.project_runner import ProjectRunner
 import os
 from app.services.github_service import GitHubService
 from app.agents.readme_agent import READMEAgent
-
+from app.agents.requirement_agent import RequirementAgent
+from app.services.hitl_service import HITLService
+from app.services.workflow_service import WorkflowService
+from app.services.repair_loop_service import (
+    RepairLoopService
+)
 
 
 AGENTS = {
+    "requirement_agent": RequirementAgent,
     "backend_agent": BackendAgent,
     "backend_code_agent": BackendCodeAgent,
     "frontend_agent": FrontendAgent,
@@ -43,19 +49,21 @@ class Orchestrator:
     @staticmethod
     def execute(task: str):
 
+        workflow = WorkflowService.create(task)
+
+
         route = JevRouter.route(task)
 
-        workflow = JevWorkflowEvaluator.evaluate(
-            task
-        )
+        workflow_plan = JevWorkflowEvaluator.evaluate(task)
 
         risk = JevRiskEvaluator.evaluate(
             task
         )
+        hitl_result = HITLService.evaluate(task)
 
         results = {}
 
-        if workflow["workflow_type"] == "single_agent":
+        if workflow_plan["workflow_type"] == "single_agent":
 
             agent_name = route["selected_agent"]
 
@@ -75,6 +83,15 @@ class Orchestrator:
 
                 backend_plan = BackendAgent.execute(
                     task
+                )
+                workflow.requirement = backend_plan
+                workflow.status = "requirements_completed"
+
+                print(
+                    "Requirement Step Completed"
+                )
+                print(
+                    workflow.model_dump()
                 )
 
                 context.backend_plan = (
@@ -128,6 +145,16 @@ class Orchestrator:
                 context.generated_files = (
                     generated_files
                 )
+                workflow.generated_files = generated_files
+                workflow.status = "code_generated"
+
+                print(
+                    "Code Generation Completed"
+                )
+                print(
+                    workflow.model_dump()
+                )
+
 
                 results["generated_files"] = (
                     generated_files
@@ -153,26 +180,31 @@ class Orchestrator:
                     project_name
                 )
 
+                repair_result = (
+                RepairLoopService.execute(
+                    project_folder
+                )
+            )
+
+                results["repair_result"] = repair_result
+
+                if not repair_result["success"]:
+                  workflow.status = "failed"
+                  return {
+                      "route": route,
+                      "workflow_plan": workflow_plan,
+                      "workflow_state": workflow.model_dump(),
+                      "risk": risk,
+                      "error": "Project validation failed",
+                      "repair_result": repair_result
+                  }
+
                 results["project_folder"] = project_folder
 
                 print(
                     f"Project saved at {project_folder}"
                 )
 
-                # ----------------------------------
-                # Step 3.5: Push To GitHub
-                # ----------------------------------
-
-                repo_url = GitHubService.push_project(
-                    project_folder,
-                    project_name
-                )
-
-                results["repo_url"] = repo_url
-
-                print(
-                    f"GitHub Repo: {repo_url}"
-                )
 
                 # ----------------------------------
                 # Step 4: Run Tests
@@ -184,6 +216,14 @@ class Orchestrator:
 
                 results["test_result"] = (
                     test_result
+                )
+                workflow.status = "completed"
+
+                print(
+                    "Workflow Completed"
+                )
+                print(
+                    workflow.model_dump()
                 )
 
                 print(
@@ -199,9 +239,30 @@ class Orchestrator:
                     agent.execute(task)
                 )
 
+                # ----------------------------------
+                # Step 4.5: Push To GitHub
+                # ----------------------------------
+                
+                repo_url = GitHubService.push_project(
+                      project_folder,
+                      project_name
+                      )
+                
+                results["repo_url"] = repo_url
+                workflow.status = "github_pushed"
+                
+                print("GitHub Push Completed"
+                                )
+                print(workflow.model_dump()
+                                )
+                
+                print(f"GitHub Repo: {repo_url}"
+                                )
+
         return {
-            "route": route,
-            "workflow": workflow,
-            "risk": risk,
-            "result": results
-        }
+    "route": route,
+    "workflow_plan": workflow_plan,
+    "workflow_state": workflow.model_dump(),
+    "risk": risk,
+    "result": results
+}

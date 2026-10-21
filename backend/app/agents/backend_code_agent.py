@@ -1,3 +1,5 @@
+from openai import OpenAI
+
 from app.agents.base_agent import BaseAgent
 
 BACKEND_CODE_PROMPT = """
@@ -28,7 +30,8 @@ class BackendCodeAgent(BaseAgent):
     def execute(
         cls,
         context,
-        file_path
+        file_path,
+        llm_client: OpenAI | None = None,
     ):
 
         prompt = BACKEND_CODE_PROMPT.format(
@@ -40,6 +43,6 @@ class BackendCodeAgent(BaseAgent):
             file_path=file_path
         )
 
-        response = cls.call_llm(prompt)
+        response = cls.call_llm(prompt, llm_client)
 
         return cls.parse_json(response)

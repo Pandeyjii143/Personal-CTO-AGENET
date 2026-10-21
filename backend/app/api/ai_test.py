@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from app.agents.openai_client import client
+from app.agents.openai_client import get_openai_client
 
 from fastapi import APIRouter
 from app.agents.architect_agent import ArchitectAgent
@@ -17,11 +17,13 @@ from app.agents.jev_completion_validator import (
 from app.agents.orchestrator import (
     Orchestrator
 )
+from app.services.validator_service import ValidatorService
 
 ai_test_router = APIRouter(
     prefix="/ai",
     tags=["AI Test"]
 )
+from app.agents.requirement_agent import RequirementAgent
 
 @ai_test_router.get("/architect-test")
 def architect_test():
@@ -33,7 +35,7 @@ def architect_test():
 @ai_test_router.get("/ai-test")
 def ai_test():
 
-    response = client.responses.create(
+    response = get_openai_client().responses.create(
         model="gpt-5.6",
         input="Say hello CTO"
     )
@@ -122,3 +124,13 @@ def orchestrator_test():
     return Orchestrator.execute(
         "Build JWT authentication system using FastAPI"
     )
+
+
+@ai_test_router.get("/validator-test")
+def validator_test():
+
+    report = ValidatorService.validate_project(
+        project_folder="generated_projects/generated_project_20260923_195528"
+    )
+
+    return report

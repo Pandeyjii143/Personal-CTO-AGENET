@@ -1,5 +1,7 @@
 # app/agents/readme_agent.py
 
+from openai import OpenAI
+
 from app.agents.base_agent import BaseAgent
 
 README_PROMPT = """
@@ -24,12 +26,12 @@ Return JSON:
 class READMEAgent(BaseAgent):
 
     @classmethod
-    def execute(cls, context):
+    def execute(cls, context, llm_client: OpenAI | None = None):
         prompt = README_PROMPT.format(
             task=context.task,
             backend_summary=context.backend_plan["backend_summary"]
         )
 
-        response = cls.call_llm(prompt)
+        response = cls.call_llm(prompt, llm_client)
 
         return cls.parse_json(response)

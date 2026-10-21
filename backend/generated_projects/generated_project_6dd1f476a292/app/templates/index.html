@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Expense Tracker</title>
+    <style>
+        :root { color-scheme: light; font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color: #1f2937; background: #f3f4f6; }
+        * { box-sizing: border-box; }
+        body { margin: 0; padding: 2rem 1rem; }
+        main { width: min(100%, 960px); margin: 0 auto; }
+        h1, h2 { margin-top: 0; }
+        h1 { margin-bottom: .35rem; }
+        .subtitle { color: #6b7280; margin: 0 0 1.5rem; }
+        .panel { background: #fff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 1.25rem; margin-bottom: 1.25rem; box-shadow: 0 2px 8px rgb(15 23 42 / 4%); }
+        .form-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr auto; gap: .75rem; align-items: end; }
+        label { display: block; font-size: .875rem; font-weight: 600; margin-bottom: .35rem; }
+        input { width: 100%; min-width: 0; padding: .65rem .7rem; border: 1px solid #d1d5db; border-radius: 7px; font: inherit; }
+        input:focus { outline: 2px solid #93c5fd; border-color: #3b82f6; }
+        button { border: 0; border-radius: 7px; padding: .68rem .9rem; font: inherit; font-weight: 600; cursor: pointer; }
+        .primary { color: #fff; background: #2563eb; }
+        .primary:hover { background: #1d4ed8; }
+        .danger { color: #b91c1c; background: #fee2e2; }
+        .danger:hover { background: #fecaca; }
+        .table-wrap { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { text-align: left; padding: .8rem .6rem; border-bottom: 1px solid #e5e7eb; vertical-align: middle; }
+        th { color: #6b7280; font-size: .8rem; text-transform: uppercase; letter-spacing: .04em; }
+        td.amount { white-space: nowrap; font-variant-numeric: tabular-nums; }
+        .actions { white-space: nowrap; }
+        .edit-form { display: grid; grid-template-columns: minmax(130px, 2fr) minmax(90px, 1fr) minmax(110px, 1fr) minmax(130px, 1fr) auto; gap: .5rem; align-items: end; }
+        .edit-form input { padding: .5rem; }
+        .edit-form button { padding: .55rem .7rem; }
+        .delete-form { display: inline; margin-left: .35rem; }
+        .empty { color: #6b7280; text-align: center; padding: 2rem 1rem; }
+        @media (max-width: 720px) {
+            body { padding: 1rem .65rem; }
+            .form-grid { grid-template-columns: 1fr 1fr; }
+            .form-grid .description-field { grid-column: 1 / -1; }
+            .form-grid button { grid-column: 1 / -1; }
+            .edit-form { min-width: 620px; }
+            th, td { padding: .65rem .45rem; }
+        }
+    </style>
+</head>
+<body>
+<main>
+    <header>
+        <h1>Expense Tracker</h1>
+        <p class="subtitle">Keep track of your spending in one place.</p>
+    </header>
+
+    <section class="panel" aria-labelledby="add-expense-heading">
+        <h2 id="add-expense-heading">Add an expense</h2>
+        <form action="/expenses" method="post" class="form-grid">
+            <div class="description-field">
+                <label for="description">Description</label>
+                <input id="description" name="description" type="text" maxlength="200" required placeholder="e.g. Groceries">
+            </div>
+            <div>
+                <label for="amount">Amount</label>
+                <input id="amount" name="amount" type="number" min="0.01" step="0.01" required placeholder="0.00">
+            </div>
+            <div>
+                <label for="category">Category</label>
+                <input id="category" name="category" type="text" maxlength="100" required placeholder="e.g. Food">
+            </div>
+            <div>
+                <label for="date">Date</label>
+                <input id="date" name="date" type="date" required>
+            </div>
+            <button class="primary" type="submit">Add expense</button>
+        </form>
+    </section>
+
+    <section class="panel" aria-labelledby="expenses-heading">
+        <h2 id="expenses-heading">Your expenses</h2>
+        {% if expenses %}
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th scope="col">Description</th>
+                        <th scope="col">Amount</th>
+                        <th scope="col">Category</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for expense in expenses %}
+                    <tr>
+                        <td colspan="5">
+                            <form action="/expenses/{{ expense.id }}/update" method="post" class="edit-form">
+                                <div>
+                                    <label for="description-{{ expense.id }}">Description</label>
+                                    <input id="description-{{ expense.id }}" name="description" type="text" maxlength="200" value="{{ expense.description }}" required>
+                                </div>
+                                <div>
+                                    <label for="amount-{{ expense.id }}">Amount</label>
+                                    <input id="amount-{{ expense.id }}" name="amount" type="number" min="0.01" step="0.01" value="{{ expense.amount }}" required>
+                                </div>
+                                <div>
+                                    <label for="category-{{ expense.id }}">Category</label>
+                                    <input id="category-{{ expense.id }}" name="category" type="text" maxlength="100" value="{{ expense.category }}" required>
+                                </div>
+                                <div>
+                                    <label for="date-{{ expense.id }}">Date</label>
+                                    <input id="date-{{ expense.id }}" name="date" type="date" value="{{ expense.date }}" required>
+                                </div>
+                                <div class="actions">
+                                    <button class="primary" type="submit">Save</button>
+                                    <button class="danger" type="submit" form="delete-{{ expense.id }}">Delete</button>
+                                </div>
+                            </form>
+                            <form id="delete-{{ expense.id }}" class="delete-form" action="/expenses/{{ expense.id }}/delete" method="post" onsubmit="return confirm('Delete this expense?');"></form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="empty">No expenses yet. Add your first expense above.</p>
+        {% endif %}
+    </section>
+</main>
+</body>
+</html>

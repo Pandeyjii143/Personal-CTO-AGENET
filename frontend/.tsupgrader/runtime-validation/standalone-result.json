@@ -1,0 +1,103 @@
+{
+  "planHash": "18492bc657bca7069e2d8b486acfdd56221c9d4be1f28c85a701faf26ad5bd9b",
+  "phase": "standalone",
+  "recordedAtUtc": "2026-10-21T13:13:30.0146150Z",
+  "retryCount": 1,
+  "resetBaseline": false,
+  "complete": true,
+  "result": {
+    "setupSucceeded": true,
+    "setupDurationMs": 0,
+    "setupFailureOutput": null,
+    "assertions": [
+      {
+        "name": "production-build-passes",
+        "kind": "process",
+        "verificationMethod": "exit-code",
+        "passed": false,
+        "timedOut": false,
+        "skipped": false,
+        "skippedReason": null,
+        "exitCode": 1,
+        "outputSample": "\r\n\u003E frontend@0.0.0 build\r\n\u003E tsc -b \u0026\u0026 vite build\r\n\r\n\u0027tsc\u0027 is not recognized as an internal or external command,\r\noperable program or batch file.\r\n",
+        "durationMs": 816
+      },
+      {
+        "name": "dev-server-serves-home",
+        "kind": "http-probe",
+        "verificationMethod": "http-status",
+        "passed": false,
+        "timedOut": false,
+        "skipped": false,
+        "skippedReason": null,
+        "exitCode": 1,
+        "outputSample": "server exited before responding (exit=1)\n--- server output ---\n\r\n\u003E frontend@0.0.0 dev\r\n\u003E vite --host 127.0.0.1 --port 5174 --strictPort\r\n\r\nvite.config.ts (1:375) \u001B[33m[UNRESOLVED_IMPORT] \u001B[0mCould not resolve \u0027@vitejs/plugin-react\u0027 in vite.config.ts\r\n - Module not found, treating it as an external dependency in vite.config.ts at 375..397\r\n\r\n\u001B[31mfailed to load config from C:\\Users\\User\\OneDrive\\Desktop\\personal-cto-ai\\frontend\\vite.config.ts\u001B[39m\r\n\u001B[31merror when starting dev server:\r\nError [ERR_MODULE_NOT_FOUND]: Cannot find package \u0027@vitejs/plugin-react\u0027 imported from C:\\Users\\User\\OneDrive\\Desktop\\personal-cto-ai\\frontend\\node_modules\\.vite-temp\\vite.config.ts.timestamp-1792588406943-4be10c6b09862.mjs\r\n    at Object.getPackageJSONURL (node:internal/modules/package_json_reader:301:9)\r\n    at packageResolve (node:internal/modules/esm/resolve:768:81)\r\n    at moduleResolve (node:internal/modules/esm/resolve:859:18)\r\n    at defaultResolve (node:internal/modules/esm/resolve:992:11)\r\n    at #cachedDefaultResolve (node:internal/modules/esm/loader:701:20)\r\n    at #resolveAndMaybeBlockOnLoaderThread (node:internal/modules/esm/loader:721:38)\r\n    at ModuleLoader.resolveSync (node:internal/modules/esm/loader:759:56)\r\n    at #resolve (node:internal/modules/esm/loader:683:17)\r\n    at ModuleLoader.getOrCreateModuleJob (node:internal/modules/esm/loader:603:35)\r\n    at ModuleJob.syncLink (node:internal/modules/esm/module_job:163:33) {\r\n  code: \u0027ERR_MODULE_NOT_FOUND\u0027\r\n}\u001B[39m\r\n",
+        "durationMs": 4670
+      },
+      {
+        "name": "tests-pass",
+        "kind": "process",
+        "verificationMethod": "test-results",
+        "passed": false,
+        "timedOut": false,
+        "skipped": false,
+        "skippedReason": null,
+        "exitCode": 1,
+        "outputSample": "\r\n\u003E frontend@0.0.0 test\r\n\u003E vitest run\r\n\r\n\u0027vitest\u0027 is not recognized as an internal or external command,\r\noperable program or batch file.\r\n",
+        "durationMs": 1113,
+        "testResults": {
+          "testFramework": "vitest",
+          "runnerDetectedFrom": "package_json",
+          "testsTotal": 0,
+          "testsPassed": 0,
+          "testsFailed": 0,
+          "testsSkipped": 0,
+          "parseFailed": true
+        }
+      }
+    ],
+    "executions": [
+      {
+        "source": "production-build-passes",
+        "resolvedExecutable": "C:\\Program Files\\nodejs\\npm.CMD",
+        "args": [
+          "run",
+          "build"
+        ],
+        "cwd": "C:\\Users\\User\\OneDrive\\Desktop\\personal-cto-ai\\frontend",
+        "env": {},
+        "prependPath": [],
+        "platform": "win32"
+      },
+      {
+        "source": "dev-server-serves-home",
+        "resolvedExecutable": "C:\\Program Files\\nodejs\\npm.CMD",
+        "args": [
+          "run",
+          "dev",
+          "--",
+          "--host",
+          "127.0.0.1",
+          "--port",
+          "5174",
+          "--strictPort"
+        ],
+        "cwd": "C:\\Users\\User\\OneDrive\\Desktop\\personal-cto-ai\\frontend",
+        "env": {},
+        "prependPath": [],
+        "platform": "win32"
+      },
+      {
+        "source": "tests-pass",
+        "resolvedExecutable": "C:\\Program Files\\nodejs\\npm.CMD",
+        "args": [
+          "test"
+        ],
+        "cwd": "C:\\Users\\User\\OneDrive\\Desktop\\personal-cto-ai\\frontend",
+        "env": {},
+        "prependPath": [],
+        "platform": "win32"
+      }
+    ]
+  }
+}

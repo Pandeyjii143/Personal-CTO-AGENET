@@ -1,0 +1,86 @@
+:root {
+  font-family: 'Segoe UI', system-ui, sans-serif;
+  color: #202832;
+  background: #f7f8fa;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  --canvas: #f7f8fa;
+  --surface: #ffffff;
+  --surface-muted: #f9fafb;
+  --surface-hover: #f1f4f6;
+  --border: #e6e9ed;
+  --border-strong: #d8dde3;
+  --text: #202832;
+  --text-secondary: #64707d;
+  --text-muted: #89939e;
+  --accent: #356b60;
+  --accent-strong: #28564d;
+  --accent-soft: #eaf3f0;
+  --blue: #5178ac;
+  --blue-soft: #edf3fa;
+  --violet: #7664a7;
+  --violet-soft: #f1eff8;
+  --green: #39785b;
+  --green-soft: #eaf4ee;
+  --amber: #a47432;
+  --amber-soft: #fbf3e6;
+  --red: #ad4e4e;
+  --red-soft: #fbefef;
+  --shadow-sm: 0 1px 2px rgb(24 35 45 / 4%), 0 3px 10px rgb(24 35 45 / 3%);
+  --shadow-dialog: 0 18px 65px rgb(20 31 40 / 20%);
+  --radius-sm: 7px;
+  --radius-md: 11px;
+  --radius-lg: 16px;
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  color: #e4e9ed;
+  background: #111719;
+
+  --canvas: #111719;
+  --surface: #182023;
+  --surface-muted: #1c2629;
+  --surface-hover: #243033;
+  --border: #2b373a;
+  --border-strong: #39474b;
+  --text: #e4e9ed;
+  --text-secondary: #a2afb5;
+  --text-muted: #7d8b91;
+  --accent: #83b6a8;
+  --accent-strong: #a0cdbf;
+  --accent-soft: #203a34;
+  --blue: #92b3df;
+  --blue-soft: #202e40;
+  --violet: #b6a7df;
+  --violet-soft: #302a3d;
+  --green: #91c9a4;
+  --green-soft: #20382a;
+  --amber: #ddb477;
+  --amber-soft: #3a3021;
+  --red: #df9393;
+  --red-soft: #3b2626;
+  --shadow-sm: 0 1px 2px rgb(0 0 0 / 12%), 0 3px 10px rgb(0 0 0 / 9%);
+  --shadow-dialog: 0 18px 65px rgb(0 0 0 / 50%);
+}
+
+* { box-sizing: border-box; }
+
+body {
+  min-width: 360px;
+  min-height: 100vh;
+  margin: 0;
+}
+
+button, input, textarea { font: inherit; }
+button { color: inherit; }
+a { color: inherit; text-decoration: none; }
+button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--accent) 55%, transparent);
+  outline-offset: 2px;
+}
+
+::selection { background: color-mix(in srgb, var(--accent) 22%, transparent); }

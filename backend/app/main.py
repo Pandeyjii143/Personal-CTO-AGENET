@@ -12,7 +12,8 @@ from app.api.tasks import (
 )
 from app.core.config import settings
 from app.api.ai_test import ai_test_router
-
+from app.api.repair import repair_router
+from app.api.generation import router as generation_router
 
 
 
@@ -36,6 +37,8 @@ app.include_router(blueprint_router)
 app.include_router(milestone_router)
 app.include_router(task_router)
 app.include_router(ai_test_router)
+app.include_router(repair_router)
+app.include_router(generation_router)
 
 
 

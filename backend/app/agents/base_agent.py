@@ -1,6 +1,8 @@
 import json
 
-from app.agents.openai_client import client
+from openai import OpenAI
+
+from app.agents.openai_client import get_openai_client
 from app.core.settings import settings
 from app.core.agent_config import AGENT_CONFIG
 
@@ -30,7 +32,7 @@ class BaseAgent:
         )
 
     @classmethod
-    def call_llm(cls, prompt: str):
+    def call_llm(cls, prompt: str, llm_client: OpenAI | None = None):
 
         if not prompt:
             raise ValueError(
@@ -47,7 +49,8 @@ class BaseAgent:
             model = cls.get_model()
             max_tokens = cls.get_max_output_tokens()
 
-            response = client.responses.create(
+            active_client = llm_client or get_openai_client()
+            response = active_client.responses.create(
                 model=model,
                 input=prompt,
                 max_output_tokens=max_tokens
@@ -64,6 +67,10 @@ class BaseAgent:
             return response.output_text
 
         except Exception as e:
+            if llm_client is not None:
+                raise RuntimeError(
+                    f"{cls.__name__} failed while using the supplied OpenAI API key"
+                ) from None
             print(
                 f"{cls.__name__} ERROR: {e}"
             )

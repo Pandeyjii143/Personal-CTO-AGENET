@@ -1,4 +1,3 @@
-from app.agents.openai_client import client
 from app.core.prompts import ARCHITECT_PROMPT
 import json
 from app.core.settings import settings
